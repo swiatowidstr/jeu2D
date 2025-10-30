@@ -9,30 +9,38 @@ import java.awt.desktop.ScreenSleepEvent;
 
 import javax.swing.JPanel;
 
+import entity.Player;
+import tile.TileManager;
+
 
 
 public class GamePanel extends JPanel implements Runnable{
 	
 	// SCREEN SETTINGS
 	final int originalTileSize = 16; // 16x16 tile
-	final int scale = 3;
+	final int scale = 6;
 	
-	final int tileSize = originalTileSize * scale; //48x48 tile
-	final int maxScreenCol = 16;
-	final int maxSreenRow = 12;
-	final int screenWIdth = tileSize * maxScreenCol; // 768px
-	final int screenHeight = tileSize * maxSreenRow; // 576px
+	public int tileSize = originalTileSize * scale; //48x48 tile
+	public int maxScreenCol = 16;
+	public int maxSreenRow = 12;
+	public int screenWIdth = tileSize * maxScreenCol; // 768px
+	public int screenHeight = tileSize * maxSreenRow; // 576px
+	
+	//WORLD SETTINGS 
+	public final int maxWorldCol = 50;
+	public final int maxWorldRow = 50;
+	public final int worldWidth = tileSize * maxWorldCol;
+	public final int worldHeight = tileSize * maxSreenRow;
 	
 	//FPS
 	int FPS  = 60;
 	
-	KeyHandler keyH = new KeyHandler();
-	Thread gameThread;
 	
-	//set player default position
-	int playerX = 100;
-	int playerY = 100;
-	int playerSpeed = 4;
+	TileManager tileM = new TileManager(this);
+	KeyHandler keyH = new KeyHandler(this);
+	Thread gameThread;
+	public CollisionChecker cChecker = new CollisionChecker(this);
+	public Player player = new Player(this, keyH);
 	
 	public  GamePanel() {
 		
@@ -41,6 +49,27 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+	}
+	public void zoomInOut(int i) {
+		
+		int oldWorldWidth = tileSize * maxWorldCol;
+		tileSize += i;
+		int newWorldWidth = tileSize * maxWorldCol;
+		
+		player.speed = (double)newWorldWidth/600;
+		
+		double multiplier = (double)newWorldWidth/oldWorldWidth;
+		
+		System.out.println(tileSize);
+		System.out.println(newWorldWidth);
+		System.out.println(player.worldX);
+		System.out.println("speed" + player.speed);
+		
+		double newPlayerWorldX = player.worldX * multiplier;
+		double newPlayerWorldY = player.worldY * multiplier;
+		
+		player.worldX = newPlayerWorldX;
+		player.worldY = newPlayerWorldY;
 	}
 	
 	public void startGameThread() {
@@ -116,7 +145,7 @@ public class GamePanel extends JPanel implements Runnable{
 			if (timer >= 1000000000){
 				System.out.println("FPS:" + drawCount);
 				drawCount = 0;
-				timer = 0;
+				timer = 0; 
 			}
 			
 			
@@ -124,18 +153,8 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void update() {
-		if (keyH.upPressed == true) {
-			playerY -= playerSpeed;
-		}
-		else if (keyH.leftPressed == true) {
-			playerX -= playerSpeed;
-		}
-		else if (keyH.downPressed == true) {
-			playerY += playerSpeed;
-		}
-		else if (keyH.rightPressed == true) {
-			playerX += playerSpeed;
-		}
+		
+		player.update();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -144,9 +163,9 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		Graphics2D g2 = (Graphics2D)g;
 		
-		g2.setColor(Color.white);
+		tileM.draw(g2);
 		
-		g2.fillRect(playerX, playerY, tileSize, tileSize);
+		player.draw(g2);
 		
 		g2.dispose();
 	}
