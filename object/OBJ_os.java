@@ -4,15 +4,15 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 
-public class OBJ_chest extends SuperObject{
-
+public class OBJ_os extends SuperObject{
+	
 	GamePanel gp;	
 	
-	public OBJ_chest(GamePanel gp) {
+	public OBJ_os(GamePanel gp) {
 		
-		name = "Chest";
+		name = "Os";
 		try {
-			image = ImageIO.read(getClass().getResource("/objects/coffre_1.png"));
+			image = ImageIO.read(getClass().getResource("/objects/os_1.png"));
 			uTool.scaleImage(image, gp.tileSize, gp.tileSize);
 			
 		} catch (Exception e) {

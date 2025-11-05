@@ -2,14 +2,19 @@ package object;
 
 import javax.imageio.ImageIO;
 
-public class OBJ_key extends SuperObject{
+import main.GamePanel;
+
+public class OBJ_key extends SuperObject {
+
+	GamePanel gp;	
 	
-	public OBJ_key() {
-		
+	public OBJ_key(GamePanel gp) {
+
 		name = "Key";
 		try {
-			image = ImageIO.read(getClass().getResource("/objects/cle_porte_1.png"));
-			
+			image = ImageIO.read(getClass().getResource("/objects/key.png"));
+			uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
