@@ -14,16 +14,15 @@ import main.UtilityTool;
 
 public class Player extends Entity {
 
-	GamePanel gp;
 	KeyHandler keyH;
 
 	public final int screenX;
 	public final int screenY;
-	public int hasKey = 0;
+//	public int hasKey = 0;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
-
-		this.gp = gp;
+		
+		super(gp);
 		this.keyH = keyH;
 
 		screenX = gp.screenWIdth / 2 - (gp.tileSize / 2);
@@ -52,87 +51,79 @@ public class Player extends Entity {
 
 	public void getPlayerImage() {
 
-		up1 = setup("duck_up1");
-		up2 = setup("duck_up2");
-		down1 = setup("duck_down1");
-		down2 = setup("duck_down2");
-		left1 = setup("duck_left1");
-		left2 = setup("duck_left2");
-		right1 = setup("duck_right1");
-		right2 = setup("duck_right2");
+		up1 = setup("/player/duck_up1");
+		up2 = setup("/player/duck_up2");
+		down1 = setup("/player/duck_down1");
+		down2 = setup("/player/duck_down2");
+		left1 = setup("/player/duck_left1");
+		left2 = setup("/player/duck_left2");
+		right1 = setup("/player/duck_right1");
+		right2 = setup("/player/duck_right2");
 	}
 	
-	public BufferedImage setup(String imageName) {
-		
-		UtilityTool uTool = new UtilityTool();
-		BufferedImage image= null;
-		 try {
-			image = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName + ".png"));
-			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
-			 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		 return image;
-	}
 	
 	public void update() {
 
+		
 		if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
 				|| keyH.rightPressed == true) {
 			if (keyH.upPressed == true) {
 				direction = "up";
-
+	
 			} else if (keyH.leftPressed == true) {
 				direction = "left";
-
+	
 			} else if (keyH.downPressed == true) {
 				direction = "down";
-
+	
 			} else if (keyH.rightPressed == true) {
 				direction = "right";
-
+	
 			}
 
-			// CHECK THE COLLISION
-			collisionOn = false;
-			gp.cChecker.checkTile(this);
+		// CHECK THE COLLISION
+		collisionOn = false;
+		gp.cChecker.checkTile(this);
 
-			// check object collision
-			int objectIndex = gp.cChecker.ckeckObject(this, true);
-			pickUpObject(objectIndex);
+		// CHECK OBJECT COLLISION
+		int objectIndex = gp.cChecker.ckeckObject(this, true);
+		pickUpObject(objectIndex);
+		
+		//CHECK NPC COLLISION
+		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+		interactNPC(npcIndex);
+		
+		// IF COLLISION IS FALSE, PLAYER CANT MOVE
+		if (!collisionOn) {
 
-			// IF COLLISION IS FALSE, PLAYER CANT MOVE
-			if (collisionOn == false) {
-
-				switch (direction) {
-				case "up": {
-					worldY -= speed;
-					break;
-				}
-				case "down": {
-					worldY += speed;
-					break;
-				}
-				case "left": {
-					worldX -= speed;
-					break;
-				}
-				case "right": {
-					worldX += speed;
-					break;
-				}
-				}
+			switch (direction) {
+			case "up": {
+				worldY -= speed;
+				break;
 			}
+			case "down": {
+				worldY += speed;
+				break;
+			}
+			case "left": {
+				worldX -= speed;
+				break;
+			}
+			case "right": {
+				worldX += speed;
+				break;
+			}
+			}
+		}
 
-			spriteCounter++;
-			if (spriteCounter > 10) {
-				if (spriteNum == 1) {
-					spriteNum = 2;
-				} else if (spriteNum == 2) {
-					spriteNum = 1;
-				}
-				spriteCounter = 0;
+		spriteCounter++;
+		if (spriteCounter > 10) {
+			if (spriteNum == 1) {
+				spriteNum = 2;
+			} else if (spriteNum == 2) {
+				spriteNum = 1;
+			}
+			spriteCounter = 0;
 			}
 		}
 
@@ -141,39 +132,21 @@ public class Player extends Entity {
 	public void pickUpObject(int i) {
 
 		if (i != 999) {
-
-			String objectName = gp.obj[i].name;
-
-			switch (objectName) {
-			case "Key": {
-				hasKey++;
-				gp.obj[i] = null;
-				gp.ui.showMessage("You got a key !");
-				break;
-			}
-			case "Door": {
-				if (hasKey > 0) {
-					gp.obj[i] = null;
-					hasKey--;
-					gp.ui.showMessage("You opened the door !");
-				} else {
-					gp.ui.showMessage("You dont have a Key looser ! HAHAHA");
-				}
-				break;
-			}
-			case "Boots": {
-				speed += 2;
-				gp.obj[i] = null;
-				gp.ui.showMessage("Speedy boy !");
-				break;
-			}
-			case "Chest": {
-				gp.ui.gameFinished = true;
-				gp.stopMusic();
-				break;
-			}
+			
+			
+		}
+	}
+	
+	public void interactNPC(int i) {
+		
+		if (i != 999) {
+			
+			if (gp.keyH.ePressed) {
+				gp.gameState = gp.dialogueState;
+				gp.npc[i].speak();
 			}
 		}
+		gp.keyH.ePressed = false;
 	}
 
 	public void draw(Graphics2D g2) {
@@ -229,3 +202,60 @@ public class Player extends Entity {
 
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//public void pickUpObject(int i) {
+//
+//	if (i != 999) {
+//
+//		String objectName = gp.obj[i].name;
+//
+//		switch (objectName) {
+//		case "Key": {
+//			hasKey++;
+//			gp.obj[i] = null;
+//			gp.ui.showMessage("You got a key !");
+//			break;
+//		}
+//		case "Door": {
+//			if (hasKey > 0) {
+//				gp.obj[i] = null;
+//				hasKey--;
+//				gp.ui.showMessage("You opened the door !");
+//			} else {
+//				gp.ui.showMessage("You dont have a Key looser ! HAHAHA");
+//			}
+//			break;
+//		}
+//		case "Boots": {
+//			speed += 2;
+//			gp.obj[i] = null;
+//			gp.ui.showMessage("Speedy boy !");
+//			break;
+//		}
+//		case "Chest": {
+//			gp.ui.gameFinished = true;
+//			gp.stopMusic();
+//			break;
+//		}
+//		}
+//	}
+//}

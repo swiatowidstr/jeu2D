@@ -16,12 +16,13 @@ public class TileManager {
 	GamePanel gp;
 	public Tile[] tile;
 	public int mapTileNum[][];
+	private String defaultTexture = "grass00";
 
 	public TileManager(GamePanel gp) {
 
 		this.gp = gp;
 
-		tile = new Tile[50];
+		tile = new Tile[99];
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
 		getTileImage();
@@ -29,18 +30,11 @@ public class TileManager {
 	}
 
 	public void getTileImage() {
-			
+		
 		// PLACEHOLDER
-		setup(0, "grass00", false);
-		setup(1, "grass00", false);
-		setup(2, "grass00", false);
-		setup(3, "grass00", false);
-		setup(4, "grass00", false);
-		setup(5, "grass00", false);
-		setup(6, "grass00", false);
-		setup(7, "grass00", false);
-		setup(8, "grass00", false);
-		setup(9, "grass00", false);
+		for (int i = 0; i < 11; i++) {
+			setup(i, defaultTexture, false);
+		}
 		//PLACEHOLDER
 		
 		
@@ -76,6 +70,24 @@ public class TileManager {
 		setup(39, "dirt00", false);
 		setup(40, "wall00", true);
 		setup(41, "tree00", true);
+		//ponton
+		setup(42, "ponton00", false);
+		setup(43, "ponton01", true);
+		setup(44, "ponton02", true);
+		setup(45, "ponton03", true);
+		setup(46, "ponton04", true);
+		setup(47, "ponton05", true);
+		setup(48, "ponton06", true);
+		setup(49, "ponton07", true);
+		setup(50, "ponton08", true);
+		setup(51, "ponton00", false);
+		setup(52, "ponton10", true);
+		setup(53, "ponton11", true);
+		setup(54, "ponton12", true);
+		setup(55, "ponton13", true);
+		setup(56, "ponton_herbe00", true);
+		setup(57, "ponton_herbe02", true);
+		setup(58, "ponton_herbe08", true);
 
 		
 	}

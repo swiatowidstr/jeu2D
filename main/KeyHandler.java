@@ -5,77 +5,65 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
-	public boolean upPressed, downPressed, leftPressed, rightPressed;
-	GamePanel gp;
-	// DEBUG
-	boolean checkDrawTime = false;
-	public boolean showHitbox = false;
+    // === COMMANDES CLAVIER ===
+    private static final int UP_KEY = KeyEvent.VK_Z;
+    private static final int DOWN_KEY = KeyEvent.VK_S;
+    private static final int LEFT_KEY = KeyEvent.VK_Q;
+    private static final int RIGHT_KEY = KeyEvent.VK_D;
+    private static final int ACTION_KEY = KeyEvent.VK_E;
+    private static final int PAUSE_KEY = KeyEvent.VK_ESCAPE;
+    private static final int DEBUG_KEY = KeyEvent.VK_T;
+    private static final int HITBOX_KEY = KeyEvent.VK_H;
 
-	public KeyHandler(GamePanel gp) {
-		this.gp = gp;
-	}
+    public boolean upPressed, downPressed, leftPressed, rightPressed, ePressed;
+    GamePanel gp;
+    // DEBUG
+    boolean checkDrawTime = false;
+    public boolean showHitbox = false;
 
-	@Override
-	public void keyTyped(KeyEvent e) {
+    public KeyHandler(GamePanel gp) {
+        this.gp = gp;
+    }
 
-	}
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
 
-		int code = e.getKeyCode();
+        // PLAY STATE
+        if (gp.gameState == gp.playState) {
 
-		if (code == KeyEvent.VK_Z) {
-			upPressed = true;
-		}
-		if (code == KeyEvent.VK_Q) {
-			leftPressed = true;
-		}
-		if (code == KeyEvent.VK_S) {
-			downPressed = true;
-		}
-		if (code == KeyEvent.VK_D) {
-			rightPressed = true;
-		}
+            if (code == UP_KEY) upPressed = true;
+            if (code == LEFT_KEY) leftPressed = true;
+            if (code == DOWN_KEY) downPressed = true;
+            if (code == RIGHT_KEY) rightPressed = true;
+            if (code == ACTION_KEY) ePressed = true;
 
-		// DEBUG
-		if (code == KeyEvent.VK_T) {
-			if (checkDrawTime == false) {
-				checkDrawTime = true;
-			} else if (checkDrawTime == true) {
-				checkDrawTime = false;
-			}
-		}
-		//SHOW/HIDE HITBOX
-		if (code == KeyEvent.VK_H) {
-			if (showHitbox == false) {
-				showHitbox = true;
-			}
-			else if (showHitbox == true) {
-				showHitbox = false;
-			}
-		}
+            if (code == PAUSE_KEY) gp.gameState = gp.pauseState;
+            if (code == DEBUG_KEY) checkDrawTime = !checkDrawTime;
+            if (code == HITBOX_KEY) showHitbox = !showHitbox;
+        }
 
-	}
+        // PAUSE STATE
+        else if (gp.gameState == gp.pauseState) {
+            if (code == PAUSE_KEY) gp.gameState = gp.playState;
+        }
 
+        // DIALOGUE STATE
+        else if (gp.gameState == gp.dialogueState) {
+            if (code == ACTION_KEY) gp.gameState = gp.playState;
+        }
+    }
 
-	@Override
-	public void keyReleased(KeyEvent e) {
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int code = e.getKeyCode();
 
-		int code = e.getKeyCode();
-
-		if (code == KeyEvent.VK_Z) {
-			upPressed = false;
-		}
-		if (code == KeyEvent.VK_Q) {
-			leftPressed = false;
-		}
-		if (code == KeyEvent.VK_S) {
-			downPressed = false;
-		}
-		if (code == KeyEvent.VK_D) {
-			rightPressed = false;
-		}
-	}
-
+        if (code == UP_KEY) upPressed = false;
+        if (code == LEFT_KEY) leftPressed = false;
+        if (code == DOWN_KEY) downPressed = false;
+        if (code == RIGHT_KEY) rightPressed = false;
+    }
 }
