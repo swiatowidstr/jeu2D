@@ -12,7 +12,16 @@ public class NPC_Wizard extends Entity{
 		
 		direction = "down";
 		speed  = 1;
-		solidArea = new Rectangle(0, 0, 80, 80);
+		
+		//HITBOX
+		solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
+		
+		//INTERACTION BOX
+		interactionBox = new Rectangle();
+		interactionBox.width = gp.tileSize * 2;
+		interactionBox.height = gp.tileSize * 2;
+		interactionBox.x =solidArea.x - gp.tileSize / 2;
+		interactionBox.y = solidArea.x - gp.tileSize / 2;
 		
 		getImage();
 		setDialogue();
@@ -34,7 +43,7 @@ public class NPC_Wizard extends Entity{
 		
 		dialogues[0] = "Hello, little man...";
 		dialogues[1] = "So... what are you doing here ?";
-		dialogues[2] = "You know what happened to pdeople here ?...";
+		dialogues[2] = "You know what happened... \n to people here ?...";
 		dialogues[3] = "follow me ";
 	}
 	
@@ -65,37 +74,9 @@ public class NPC_Wizard extends Entity{
 
 	}
 	
-	@Override
 	public void speak() {
 		
-		if (dialogues[dialogueIndex] == null) {
-			dialogueIndex = 0;
-		}
-		gp.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;
-		
-		switch (gp.player.direction) {
-		case "up": {
-			
-			direction = "down";
-			break;
-		}
-		case "down": {
-			
-			direction = "up";
-			break;
-		}
-		case "left": {
-			
-			direction = "right";
-			break;
-		}
-		case "right": {
-			
-			direction = "leftsq";
-			break;
-		}
-		}
+		super.speak();
 	}
 
 }

@@ -29,12 +29,13 @@ public class Player extends Entity {
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
 		solidArea = new Rectangle();
-		solidArea.x = 16;
-		solidArea.y = 32;
+		solidArea.width = 50;
+		solidArea.height = 50;
+		solidArea.x = gp.tileSize/2 - solidArea.width/2;
+		solidArea.y = gp.tileSize/2 - solidArea.height/2;
 		solidAreaDefaultX = solidArea.x;
 		solidAreaDefaultY = solidArea.y;
-		solidArea.width = 50;
-		solidArea.height = 40;
+
 
 		setDefaultValues();
 		getPlayerImage();
@@ -142,6 +143,7 @@ public class Player extends Entity {
 		if (i != 999) {
 			
 			if (gp.keyH.ePressed) {
+				
 				gp.gameState = gp.dialogueState;
 				gp.npc[i].speak();
 			}
@@ -193,11 +195,10 @@ public class Player extends Entity {
 		}
 		g2.drawImage(image, screenX, screenY,  null);
 		// SHOW HITBOX
-		if (keyH.showHitbox == true) {
-			g2.setColor(Color.red);
-			g2.setStroke(new BasicStroke(4));
-			g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width,
-			solidArea.height);
+		if (gp.keyH.showHitbox == 1 || gp.keyH.showHitbox == 2) {
+		    g2.setColor(Color.red);
+		    g2.setStroke(new BasicStroke(4));
+		    g2.drawRect((int)(screenX + solidArea.x), (int)(screenY + solidArea.y), solidArea.width, solidArea.height);
 		}
 
 	}

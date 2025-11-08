@@ -1,5 +1,7 @@
 package tile;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -88,6 +90,12 @@ public class TileManager {
 		setup(56, "ponton_herbe00", true);
 		setup(57, "ponton_herbe02", true);
 		setup(58, "ponton_herbe08", true);
+		setup(59, "ponton_liaison00", true);
+		setup(60, "ponton_liaison01", true);
+		setup(61, "ponton_liaison02", true);
+		setup(62, "ponton_liaison03", true);
+		setup(63, "ponton_liaison04", false);
+		setup(64, "ponton_liaison05", false);
 
 		
 	}
@@ -163,6 +171,13 @@ public class TileManager {
 					&& worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
 				g2.drawImage(tile[tileNum].image, (int) screenX, (int) screenY, null);
+				
+				//SHOW TILES HITBOX
+				if (gp.keyH.showHitbox == 2 && tile[tileNum].collision) {
+				    g2.setColor(Color.red);
+				    g2.setStroke(new BasicStroke(2));
+				    g2.drawRect((int) screenX, (int) screenY, gp.tileSize, gp.tileSize);
+				}
 			}
 
 			worldCol++;

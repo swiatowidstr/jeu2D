@@ -57,8 +57,22 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int pauseState = 2;
 	public final int dialogueState = 3;
 	
+	//SOUND SETTINGS
+	public boolean musicPlayingBeforePause = false;
+
+	
 	
 	public GamePanel() {
+		//HANDLE MOUSE CLICKS
+		this.setFocusable(true);
+		this.requestFocusInWindow();
+
+		this.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mousePressed(java.awt.event.MouseEvent e) {
+		        ui.handleMouseClick(e.getX(), e.getY());
+		    }
+		});
 
 		this.setPreferredSize(new Dimension(screenWIdth, screenHeight));
 		this.setBackground(Color.black);
@@ -129,10 +143,15 @@ public class GamePanel extends JPanel implements Runnable {
 					npc[i].update();
 				}
 			}
+	        if (!music.clip.isRunning()) {
+	            music.loop();
+	        }
 		}
 		if (gameState == pauseState) {
 			
-			
+	        if (music.clip.isRunning()) {
+	            music.stop();
+	        }
 		}
 	}
 

@@ -1,5 +1,7 @@
 package entity;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -25,17 +27,20 @@ public class Entity {
 	public int spriteNum = 1;
 	
 	public Rectangle solidArea;
+	public Rectangle interactionBox;
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collisionOn = false;
 	public int actionLockCounter = 0;
 	//DIALOGUES
 	String dialogues[] = new String[20];
 	int dialogueIndex = 0;
+	//INTERACTION BOX FOR DIALOGUES ETC
 	
 	
 	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
+		
 	}
 	
 	public void setAction() {
@@ -44,6 +49,34 @@ public class Entity {
 	
 	public void speak() {
 		
+		if (dialogues[dialogueIndex] == null) {
+			dialogueIndex = 0;
+		}
+		gp.ui.currentDialogue = dialogues[dialogueIndex];
+		dialogueIndex++;
+		
+		switch (gp.player.direction) {
+		case "up": {
+			
+			direction = "down";
+			break;
+		}
+		case "down": {
+			
+			direction = "up";
+			break;
+		}
+		case "left": {
+			
+			direction = "right";
+			break;
+		}
+		case "right": {
+			
+			direction = "left";
+			break;
+		}
+		}
 	}
 	
 	public void update() {
@@ -140,7 +173,20 @@ public class Entity {
 			}
 			}
 			
-				g2.drawImage(image, (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
+			g2.drawImage(image, (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
+			// SHOW HITBOX
+			if (gp.keyH.showHitbox == 1 || gp.keyH.showHitbox == 2) {
+			    g2.setColor(Color.red);
+			    g2.setStroke(new BasicStroke(4));
+			    g2.drawRect((int)(screenX + solidArea.x), (int)(screenY + solidArea.y), solidArea.width, solidArea.height);
+			}
+			//SHOT INTERACTION BOX
+			if (gp.keyH.showHitbox == 2) {
+				g2.setColor(Color.green);
+				g2.setStroke(new BasicStroke(4));
+				g2.drawRect((int)(screenX + interactionBox.x), (int)(screenY + interactionBox.y), interactionBox.width, interactionBox.height);
+				
+			}
 		}
 	}
 	

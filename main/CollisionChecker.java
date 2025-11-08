@@ -1,6 +1,9 @@
 package main;
 
+import java.awt.Rectangle;
+
 import entity.Entity;
+import entity.NPC_Wizard;
 
 public class CollisionChecker {
 
@@ -23,7 +26,9 @@ public class CollisionChecker {
 		int entityBottomRow = entityBottomWorldY / gp.tileSize;
 
 		int tileNum1, tileNum2;
+		
 
+		
 		switch (entity.direction) {
 		case "up": {
 			entityTopRow = (int) ((entityTopWorldY - entity.speed) / gp.tileSize);
@@ -248,5 +253,15 @@ public class CollisionChecker {
 		entity.solidArea.y = entity.solidAreaDefaultY;
 		gp.player.solidArea.x =gp.player.solidAreaDefaultX;
 		gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+	}
+	
+	public boolean checkPlayerInteraction(Entity NPC) {
+		
+		Rectangle playerRect = gp.player.solidArea;
+		
+		Rectangle interaction = new Rectangle((int)(NPC.worldX + NPC.interactionBox.x), (int)(NPC.worldY + NPC.interactionBox.y),
+				NPC.interactionBox.width, NPC.interactionBox.height);
+		
+		return playerRect.intersects(interaction);
 	}
 }

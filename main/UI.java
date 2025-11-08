@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
@@ -25,6 +26,11 @@ public class UI {
 	int messageCounter = 0;
 	public boolean gameFinished = false;
 	public String currentDialogue = "";
+	
+	//BUTTON RECTANGLES FOR MOUSE CLICKING
+	int buttonX, buttonY, buttonWidth, buttonHeight;
+	int buttonSpacing;
+	Rectangle resumeButton, settingsButton, quitButton;
 	
 	
 	
@@ -69,16 +75,41 @@ public class UI {
 			drawDialogueScreen();
 		}
 	}
-	
+	//DRAW PAUSE SCREEN
 	public void drawPauseScreen() {
 		
-		String text = "Game Paused";
+		//WINDOW
+		int x = 0;
+		int y = 0;
+		int windowWidth = gp.screenWIdth;
+		int windowHeight = gp.screenHeight;
+		drawSubwindow(x, y, windowWidth, windowHeight);
 		
-		int x = getXForcenterText(text);
+		//TEXT
+		String pause = "PAUSE";
+		g2.setFont(JBMono_80);
+		g2.setColor(Color.white);
+		x = getXForcenterText(pause);
+		y = gp.screenHeight / 6;
+		g2.drawString(pause, x, y);
 		
-		int y = gp.screenHeight/2;
+		//BUTTONS DIMENSIONS
+		buttonWidth = 400;
+		buttonHeight = 100;
+		buttonX = gp.screenWIdth / 2  - buttonWidth / 2;
+		buttonY = gp.screenHeight / 4;
+		buttonSpacing = 120;
 		
-		g2.drawString(text, x, y);
+		//UPDATE RECTANGLES
+		resumeButton = new Rectangle(buttonX, buttonY, buttonWidth, buttonHeight);
+		settingsButton = new Rectangle(buttonX, buttonY + buttonSpacing, buttonWidth, buttonHeight);
+		quitButton = new Rectangle(buttonX, buttonY + buttonSpacing * 2, buttonWidth, buttonHeight);
+		
+		//DRAW BUTTONS
+		drawButton("Resume" , buttonX, buttonY, buttonWidth, buttonHeight);
+		drawButton("Settings" , buttonX, buttonY + buttonSpacing, buttonWidth, buttonHeight);
+		drawButton("Quit" , buttonX, buttonY + buttonSpacing * 2, buttonWidth, buttonHeight);
+		
 	}
 	
 	public void drawDialogueScreen() {
@@ -93,7 +124,11 @@ public class UI {
 		
 		x += gp.tileSize;
 		y += gp.tileSize;
-		g2.drawString(currentDialogue, x, y);
+		
+		for (String line : currentDialogue.split("\n")) {
+			g2.drawString(line, x, y);
+			y += 40;
+		}
 		
 	}
 	
@@ -109,6 +144,20 @@ public class UI {
 		g2.drawRoundRect(x+10, y+10, width-20, height-20, 25, 25);
 		
 	}
+	public void drawButton(String text, int x, int y, int width, int height) {
+		
+		//BUTTON BACKGROUND
+		g2.setColor(Color.black);
+		g2.fillRoundRect(x, y, width, height, 50, 50);
+		
+		//TEXT
+		g2.setFont(JBMono_40);
+		g2.setColor(Color.white);
+	    int textX = x + width / 2 - g2.getFontMetrics().stringWidth(text) / 2;
+	    int textY = y + height / 2 + g2.getFontMetrics().getAscent() / 2 - 4;
+		g2.drawString(text, textX, textY);
+		
+	}
 	
 	public int getXForcenterText(String text) {
 		
@@ -116,6 +165,23 @@ public class UI {
 		int x = gp.screenWIdth/2 - length/2;
 		return x;
 	}
+	
+	public void handleMouseClick(int mouseX, int mouseY) {
+		
+		if (gp.gameState == gp.pauseState) {
+			if (resumeButton.contains(mouseX, mouseY)) {
+				gp.gameState = gp.playState;
+			}
+			if (settingsButton.contains(mouseX, mouseY)) {
+				System.out.println("Settings clicked");
+			}
+			if (quitButton.contains(mouseX, mouseY)) {
+				System.out.println("Bye !");
+				System.exit(mouseY);
+			}
+		}
+	}
+	
 }
 
 
